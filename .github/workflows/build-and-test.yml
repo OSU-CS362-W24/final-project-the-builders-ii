@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       upload-pages-artifact:
-        types: boolean
+        type: boolean
         required: false
 jobs:
   build-and-test:

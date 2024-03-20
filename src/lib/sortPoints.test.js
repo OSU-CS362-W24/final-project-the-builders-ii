@@ -24,10 +24,10 @@ test("sortPoints() returns swaped array if two elements are out of order (Array 
     expect(sortPoints(points)).toStrictEqual([{x:2,y:10},{x:3,y:4}])
 })
 
-test("sortPoints() returns an empty array object if empty array is given", function() {
+test("sortPoints() returns input array if elements have same x value (Array length is 2)", function() {
     // Arrange
-    points = []
+    points = [{x:10,y:20},{x:10,y:5}]
     // Act
     // Assert
-    expect(sortPoints(points)).toStrictEqual([])
+    expect(sortPoints(points)).toStrictEqual([{x:10,y:20},{x:10,y:5}])
 })

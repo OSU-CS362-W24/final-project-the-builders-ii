@@ -7,11 +7,6 @@ const {
 } = require('./chartStorage.js');
 
 const generateChartImg = require('./generateChartImg');
-jest.mock('./generateChartImg', () => {
-    return jest.fn().mockImplementation((type, data, xLabel, yLabel, title, color) => {
-        return 'https://example.com/chart.png';
-    });
-});
 
 const localStorageMock = (() => {
     let store = {};
@@ -347,5 +342,69 @@ describe('updateCurrentChartData()', () => {
         const loadedData = loadCurrentChartData();
 
         expect(loadedData).toEqual({});
+    });
+});
+
+describe('generateChartImg', () => {
+    test('should return image URL when request is successful', async () => {
+        // Mocking fetch function to return a successful response
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            blob: jest.fn().mockResolvedValueOnce(new Blob()),
+        });
+
+        // Mocking URL.createObjectURL function
+        global.URL.createObjectURL = jest.fn().mockReturnValueOnce('https://example.com/chart.png');
+
+        // Calling generateChartImg function
+        const imgUrl = await generateChartImg('line', [{ x: 1, y: 2 }], 'X Axis', 'Y Axis', 'Chart Title', '#FF0000');
+
+        // Expectations
+        expect(imgUrl).toBe('https://example.com/chart.png');
+
+        // Clean up mocks
+        jest.clearAllMocks();
+    });
+
+    test('should throw error when request fails', async () => {
+        // Mocking fetch function to return a failed response
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: false,
+            text: jest.fn().mockResolvedValueOnce('Internal Server Error'),
+        });
+
+        // Calling generateChartImg function and expecting it to throw an error
+        await expect(generateChartImg('line', [{ x: 1, y: 2 }], 'X Axis', 'Y Axis', 'Chart Title', '#FF0000'))
+            .rejects.toThrow('Internal Server Error');
+
+        // Clean up mocks
+        jest.clearAllMocks();
+    });
+
+    test('should throw error when response is not OK', async () => {
+        // Mocking fetch function to return a response with ok = false
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: false,
+            text: jest.fn().mockResolvedValueOnce('Bad Request'),
+        });
+
+        // Calling generateChartImg function and expecting it to throw an error
+        await expect(generateChartImg('line', [{ x: 1, y: 2 }], 'X Axis', 'Y Axis', 'Chart Title', '#FF0000'))
+            .rejects.toThrow('Bad Request');
+
+        // Clean up mocks
+        jest.clearAllMocks();
+    });
+
+    test('should throw error when response is not OK', async () => {
+        // Mocking fetch function to throw an error
+        global.fetch = jest.fn().mockRejectedValueOnce(new Error('Network Error'));
+
+        // Calling generateChartImg function and expecting it to throw an error
+        await expect(generateChartImg('line', [{ x: 1, y: 2 }], 'X Axis', 'Y Axis', 'Chart Title', '#FF0000'))
+            .rejects.toThrow('Network Error');
+
+        // Clean up mocks
+        jest.clearAllMocks();
     });
 });

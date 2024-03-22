@@ -5,7 +5,8 @@
 const { getAllByLabelText, getByText } = require("@testing-library/dom");
 const userEvent = require("@testing-library/user-event").default;
 const fs = require("fs");
-
+global.TextEncoder = require('util').TextEncoder;
+global.Response = require('node-fetch').Response;
 /*require("@testing-library/jest-dom/extend-expect");
 
 */
@@ -189,8 +190,14 @@ test('Data correctly sent to the chart generation function', async function () {
         await fillForm(user, xValue, yValue, plusButton, value.x, value.y);
     }
 
-    // Spy on the chart generation function
-    const spy = jest.spyOn(window, "generateChart").mockImplementation(() => {})
+    // Import the function if it's defined in a module
+    const { generateChart } = require('./generateChartImg.test.js');
+
+    // Attach the function to the window object
+    window.generateChart = generateChart;
+
+    // Now you can spy on it
+    const spy = jest.spyOn(window, "generateChart").mockImplementation(() => {});
 
     // Click "Generate chart" button
     await user.click(generateChartButton)

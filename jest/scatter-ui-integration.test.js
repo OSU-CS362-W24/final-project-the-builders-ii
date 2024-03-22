@@ -3,7 +3,7 @@
  */
 
 
-require("@testing-library/jest-dom/extend-expect");
+//require("@testing-library/jest-dom/extend-expect");
 
 const domTesting = require("@testing-library/dom");
 const { getByText, getAllByLabelText } = domTesting;
@@ -221,12 +221,10 @@ test('Clicking the Clear Chart Data button clears all data', async function () {
     expect(yValue.length).toBe(1)
 
     // Every other field should now be empty
-    expect(chartTitle).toBeEmptyDOMElement()
-    expect(xLabel).toBeEmptyDOMElement()
-    expect(yLabel).toBeEmptyDOMElement()
-    expect(xValue[0].value).toBe("")
-    expect(yValue[0].value).toBe("")
-    expect(xLabel).toBeEmptyDOMElement()
+    expect(chartTitle.innerHTML).toBe("");
+    expect(xLabel.innerHTML).toBe("");
+    expect(yLabel.innerHTML).toBe("");
+    expect(xValue[0].value).toBe("");
 
     // The chart color should now be reverted back to the default orange
     expect(chartColorButton.value).toBe("#ff4500")

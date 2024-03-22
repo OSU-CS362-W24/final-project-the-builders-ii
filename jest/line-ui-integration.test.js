@@ -3,7 +3,9 @@
  */
 
 // Some of the following code is adapted from the code shown during class
-require("@testing-library/jest-dom/extend-expect")
+
+//require("@testing-library/jest-dom/extend-expect")
+
 const domTesting = require("@testing-library/dom")
 const userEvent = require("@testing-library/user-event").default
 
@@ -214,7 +216,7 @@ test('Clicking the Clear Chart Data button clears all data', async function () {
     await user.type(xValue[1], "3")
     await user.type(yValue[1], "4")
     await user.click(plusButton)
-
+    
     xValue = domTesting.getAllByLabelText(document, "X")
     yValue = domTesting.getAllByLabelText(document, "Y")
     await user.type(xValue[2], "5")
@@ -233,12 +235,12 @@ test('Clicking the Clear Chart Data button clears all data', async function () {
     expect(xValue.length).toBe(1)
     expect(yValue.length).toBe(1)
     // Every other field should now be empty
-    expect(chartTitle).toBeEmptyDOMElement()
-    expect(xLabel).toBeEmptyDOMElement()
-    expect(yLabel).toBeEmptyDOMElement()
+    expect(chartTitle.innerHTML).toBe("")
+    expect(xLabel.innerHTML).toBe("")
+    expect(yLabel.innerHTML).toBe("")
     expect(xValue[0].value).toBe("")
     expect(yValue[0].value).toBe("")
-    expect(xLabel).toBeEmptyDOMElement()
+    expect(xLabel.innerHTML).toBe("")
     // The chart color should now be reverted back to the default orange
     expect(chartColorButton.value).toBe("#ff4500")
 })

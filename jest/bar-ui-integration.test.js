@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-global.TextEncoder = require("util").TextEncoder;
-global.Response = require('node-fetch').Response;
 
-const domTesting = require("@testing-library/dom");
-const { getByText, getAllByLabelText } = domTesting;
-const userEvent = require("@testing-library/user-event").default;
 
-const fs = require("fs");
-const generateChartImg = require("../src/lib/generateChartImg");
+const domTesting = require("@testing-library/dom")
+const { getByText } = require("@testing-library/dom")
+
+const userEvent = require("@testing-library/user-event").default
+
+const fs = require("fs")
+const generateChartImg = require("../src/lib/generateChartImg")
 
 /*require("@testing-library/jest-dom/extend-expect");*/
 
@@ -26,9 +26,12 @@ afterEach(() => {
     window.localStorage.clear();
 });
 
-const fillForm = async (user, xValue, yValue, plusButton, x, y) => {
-    await user.type(xValue[0], x);
-    await user.type(yValue[0], y);
+const fillForm = async (user, xLabel, yLabel, plusButton, x, y) => {
+
+    let xValue = domTesting.getAllByLabelText(document, xLabel)[0];
+    let yValue = domTesting.getAllByLabelText(document, yLabel)[0];
+    await user.type(xValue, x);
+    await user.type(yValue, y);
     await user.click(plusButton);
 };
 
@@ -50,10 +53,11 @@ test('Enter values into X and Y fields, and click the plus button repeatedly', a
         { x: "7", y: "8" },
         { x: "9", y: "10" },
     ];
-
+    
     for (let value of values) {
-        let xValue = getAllByLabelText(document, "X");
-        let yValue = getAllByLabelText(document, "Y");
+
+        let xValue = domTesting.getByLabelText (document, "X");
+        let yValue = domTesting.getByLabelText (document, "Y");
         await fillForm(user, xValue, yValue, plusButton, value.x, value.y);
     }
 

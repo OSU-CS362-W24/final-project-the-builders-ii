@@ -1,16 +1,17 @@
 /**
  * @jest-environment jsdom
  */
-
-const { getAllByLabelText, getByText } = require("@testing-library/dom");
-const userEvent = require("@testing-library/user-event").default;
-const fs = require("fs");
-global.TextEncoder = require('util').TextEncoder;
+global.TextEncoder = require("util").TextEncoder;
 global.Response = require('node-fetch').Response;
-/*require("@testing-library/jest-dom/extend-expect");
 
-*/
-const domTesting = require("@testing-library/dom")
+const domTesting = require("@testing-library/dom");
+const { getByText, getAllByLabelText } = domTesting;
+const userEvent = require("@testing-library/user-event").default;
+
+const fs = require("fs");
+const generateChartImg = require("../src/lib/generateChartImg");
+
+/*require("@testing-library/jest-dom/extend-expect");*/
 
 const initDOMFromFiles = (htmlPath, jsPath) => {
     const html = fs.readFileSync(htmlPath, 'utf8');
@@ -30,6 +31,8 @@ const fillForm = async (user, xValue, yValue, plusButton, x, y) => {
     await user.type(yValue[0], y);
     await user.click(plusButton);
 };
+
+
 
 test('Enter values into X and Y fields, and click the plus button repeatedly', async () => {
     initDOMFromFiles(

@@ -2,37 +2,34 @@
  * @jest-environment jsdom
  */
 
-//require("@testing-library/jest-dom/extend-expect");
+// Some of the following code is adapted from the code shown during class
+require("@testing-library/jest-dom/extend-expect")
+const domTesting = require("@testing-library/dom")
+const userEvent = require("@testing-library/user-event").default
 
-const domTesting = require("@testing-library/dom");
-const { getByText, getAllByLabelText } = domTesting;
-const userEvent = require("@testing-library/user-event").default;
+const fs = require("fs")
+const generateChartImg = require("../src/lib/generateChartImg")
 
-const fs = require("fs");
-const generateChartImg = require("../src/lib/generateChartImg");
+function initDOMFromFiles(htmlPath, jsPath) {
+    const html = fs.readFileSync(htmlPath, 'utf8')
+    document.open()
+    document.write(html)
+    document.close()
+    jest.isolateModules(function () {
+        require(jsPath)
+    })
+}
 
-const initDOMFromFiles = (htmlPath, jsPath) => {
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    document.open();
-    document.write(html);
-    document.close();
-    jest.isolateModules(() => require(jsPath));
-};
-
+// Make sure everything is reset after each test
 afterEach(() => {
-    jest.restoreAllMocks();
-    window.localStorage.clear();
-});
+    jest.restoreAllMocks()
+    window.localStorage.clear()
+})
 
-const fillForm = async (user, xValue, yValue, plusButton, x, y) => {
-    await user.type(xValue[0], x);
-    await user.type(yValue[0], y);
-    await user.click(plusButton);
-};
 test('Enter values into X and Y fields, and click the plus button repeatedly', async function () {
     initDOMFromFiles(
-        __dirname + "/../src/scatter/scatter.html",
-        __dirname + "/../src/scatter/scatter.js",
+        __dirname + "/../src/line/line.html",
+        __dirname + "/../src/line/line.js",
     )
 
     var xValue = domTesting.getAllByLabelText(document, "X") // All X input fields
@@ -124,8 +121,8 @@ test('Enter values into X and Y fields, and click the plus button repeatedly', a
 
 test('Give names to X & Y fields but no data, and generate a chart', async function () {
     initDOMFromFiles(
-        __dirname + "/../src/scatter/scatter.html",
-        __dirname + "/../src/scatter/scatter.js",
+        __dirname + "/../src/line/line.html",
+        __dirname + "/../src/line/line.js",
     )
     
     const xLabel = domTesting.getByLabelText(document, "X label") // X label fields
@@ -135,8 +132,8 @@ test('Give names to X & Y fields but no data, and generate a chart', async funct
     const user = userEvent.setup()
 
     // Type into the x and y value fields
-    await user.type(xLabel, "Dogs")
-    await user.type(yLabel, "Cats")
+    await user.type(xLabel, "Apples")
+    await user.type(yLabel, "Oranges")
 
     // Set up a spy
     const spy = jest.spyOn(window,"alert").mockImplementation(() => {})
@@ -151,8 +148,8 @@ test('Give names to X & Y fields but no data, and generate a chart', async funct
 
 test('Give data but no names to X & Y fields, and generate a chart', async function () {
     initDOMFromFiles(
-        __dirname + "/../src/scatter/scatter.html",
-        __dirname + "/../src/scatter/scatter.js",
+        __dirname + "/../src/line/line.html",
+        __dirname + "/../src/line/line.js",
     )
     
     var xValue = domTesting.getAllByLabelText(document, "X") // All X input fields
@@ -205,8 +202,8 @@ test('Give data but no names to X & Y fields, and generate a chart', async funct
 
 test('Clicking the Clear Chart Data button clears all data', async function () {
     initDOMFromFiles(
-        __dirname + "/../src/scatter/scatter.html",
-        __dirname + "/../src/scatter/scatter.js",
+        __dirname + "/../src/line/line.html",
+        __dirname + "/../src/line/line.js",
     )
     
     const chartTitle = domTesting.getByLabelText(document, "Chart title") // Chart title field
@@ -225,11 +222,11 @@ test('Clicking the Clear Chart Data button clears all data', async function () {
     domTesting.fireEvent.change(chartColorButton, {value: "#ff00ff"})
 
     // Type into Chart title
-    await user.type(chartTitle, "Dogs vs. Cats")
+    await user.type(chartTitle, "Apples vs. Oranges")
 
     // Type into the x and y value fields
-    await user.type(xLabel, "Cats")
-    await user.type(yLabel, "Cats")
+    await user.type(xLabel, "Apples")
+    await user.type(yLabel, "Oranges")
 
     // Type into the most recent set of input fields, then click the plus button.
     await user.type(xValue[0], "1")
@@ -285,8 +282,8 @@ test('Clicking the Clear Chart Data button clears all data', async function () {
 
 test('Data correctly sent to the chart generation function', async function () {
     initDOMFromFiles(
-        __dirname + "/../src/scatter/scatter.html",
-        __dirname + "/../src/scatter/scatter.js",
+        __dirname + "/../src/line/line.html",
+        __dirname + "/../src/line/line.js",
     )
     
     const chartTitle = domTesting.getByLabelText(document, "Chart title") // Chart title field
@@ -305,11 +302,11 @@ test('Data correctly sent to the chart generation function', async function () {
     domTesting.fireEvent.change(chartColorButton, {value: "#ff00ff"})
 
     // Type into Chart title
-    await user.type(chartTitle, "Cats vs. Dogs")
+    await user.type(chartTitle, "Apples vs. Oranges")
 
     // Type into the x and y value fields
-    await user.type(xLabel, "Cats")
-    await user.type(yLabel, "Dogs")
+    await user.type(xLabel, "Apples")
+    await user.type(yLabel, "Oranges")
 
     // Type into the most recent set of input fields, then click the plus button.
     await user.type(xValue[0], "1")

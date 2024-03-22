@@ -34,7 +34,7 @@ describe('saveChart()', () => {
         localStorage.clear();
     });
 
-    test('saveChart() saves a new chart when the index is not specified', () => {
+    test('saves a new chart when the index is not specified', () => {
         const chart = { title: 'Test Chart', data: [{ x: 1, y: 2 }, { x: 3, y: 4 }] };
         saveChart(chart);
         const savedCharts = loadAllSavedCharts();
@@ -42,7 +42,7 @@ describe('saveChart()', () => {
         expect(savedCharts[0]).toEqual(chart);
     });
 
-    test('saveChart() should overwrite existing chart data when the index is specified', () => {
+    test('should overwrite existing chart data when the index is specified', () => {
         const initialChart = { title: 'Initial Chart', data: [{ x: 1, y: 2 }, { x: 3, y: 4}] };
         saveChart(initialChart);
 
@@ -74,14 +74,12 @@ describe('saveChart()', () => {
 
     test('saves chart with empty data for further use', () => {
         const emptyChart = { title: 'Empty Data Chart', data: [] };
-        const initialSavedCharts = loadAllSavedCharts();
         saveChart(emptyChart);
         const savedCharts = loadAllSavedCharts();
         expect(savedCharts).toContainEqual(emptyChart);
     });
     
     test('negative index chart saves to whichever index it was entered', () => {
-        const initialSavedCharts = loadAllSavedCharts();
         const chart1 = { title: 'Chart 1', data: [{ x: 1, y: 2 }, { x: 3, y: 4 }] };
         const chart2 = { title: 'Chart 2', data: [{ x: 5, y: 6 }, { x: 7, y: 8 }] };
         const negativeIndexChart = { title: 'Negative Index Chart', data: [{ x: 13, y: 14 }, { x: 15, y: 16 }] };

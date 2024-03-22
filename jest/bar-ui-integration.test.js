@@ -93,6 +93,7 @@ test('Give data but no names to X & Y fields, and generate a chart', async funct
 
     const user = userEvent.setup()
     const generateButton = domTesting.getByText(document, "Generate chart") // The generate chart button
+    const plusButton = domTesting.getByText(document, "+"); // The plus button
 
     const values = [
         { x: "1", y: "2" },
@@ -118,6 +119,7 @@ test('Give data but no names to X & Y fields, and generate a chart', async funct
     expect(spy).toBeCalledWith("Error: Must specify a label for both X and Y!")
     expect(spy).not.toBeCalledWith("Error: No data specified!")
 })
+
 
 test('Clicking the clear chart data button', async function () {
     initDOMFromFiles(
@@ -155,12 +157,11 @@ test('Clicking the clear chart data button', async function () {
     let xLabel = domTesting.getByLabelText(document, "X label");
     let yLabel = domTesting.getByLabelText(document, "Y label");
     let chartColorButton = domTesting.getByLabelText(document, "Chart color");
-    expect(chartTitle).toBeEmptyDOMElement()
-    expect(xLabel).toBeEmptyDOMElement()
-    expect(yLabel).toBeEmptyDOMElement()
+    expect(chartTitle.value).toBe("");
+    expect(xLabel.value).toBe("");
+    expect(yLabel.value).toBe("");
     expect(xValue[0].value).toBe("")
     expect(yValue[0].value).toBe("")
-    expect(xLabel).toBeEmptyDOMElement()
 
     // The chart color should now be reverted back to the default orange
     expect(chartColorButton.value).toBe("#ff4500")
